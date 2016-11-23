@@ -16,9 +16,9 @@ RUN npm install -g bower
 
 
 # copy source code
-COPY . /var/www/vwtools
-WORKDIR /var/www/vwtools
-ENV PYTHONPATH /var/www/vwtools
+COPY . /var/www/taskmanager
+WORKDIR /var/www/taskmanager
+ENV PYTHONPATH /var/www/taskmanager
 
 # install requirements
 #RUN echo bakkas
