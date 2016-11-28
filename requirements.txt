@@ -92,6 +92,9 @@ celery==3.1.21
 redis==2.10.5
 flower==0.8.4
 
+# install docker-py
+docker-py==1.10.6
+
 # for auth
 #git+https://github.com/VirtualWatershed/vw-auth.git@v-1.0.0#egg=vw-auth-v-1.0.0
 Flask-JWT==0.3.2
