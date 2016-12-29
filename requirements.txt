@@ -93,7 +93,7 @@ redis==2.10.5
 flower==0.8.4
 
 # install docker-py
-docker-py==1.10.6
+docker-py>=1.10.6
 docker
 
 # for auth
