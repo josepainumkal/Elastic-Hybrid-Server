@@ -94,6 +94,7 @@ flower==0.8.4
 
 # install docker-py
 docker-py==1.10.6
+docker
 
 # for auth
 #git+https://github.com/VirtualWatershed/vw-auth.git@v-1.0.0#egg=vw-auth-v-1.0.0
