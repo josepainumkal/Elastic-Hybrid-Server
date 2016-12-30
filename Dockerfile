@@ -16,6 +16,7 @@ RUN npm install -g bower
 
 # install docker client to run docker commands inside container
 #RUN apt-get install -y docker.io
+RUN wget -qO- https://get.docker.com/ | sh
 
 
 # copy source code
