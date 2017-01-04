@@ -14,7 +14,7 @@ from datetime import datetime
 from collections import defaultdict
 
 from flask import current_app as app
-from flask import redirect, render_template, session, request, flash
+from flask import redirect, render_template, session, request, flash, Response
 
 from . import main
 from .forms import SearchForm
@@ -26,6 +26,12 @@ from flask.ext.security import login_required, current_user
 from functools import wraps
 from flask_jwt import _default_jwt_encode_handler
 from gstore_client import VWClient
+
+from time import sleep
+import docker
+import docker.utils
+
+# client = docker.Client()
 
 # @cache.cached(timeout=50)
 # @main.route('/')
@@ -48,6 +54,136 @@ from gstore_client import VWClient
 #     contributor_cards = json.load(cc_file)
 
 #     return render_template("index-info.html", **locals())
+# vwtools:
+#   labels:
+#     io.rancher.container.network: 'true'
+#   image: josepainumkal/convtools:jose_toolUI
+#   ports:
+#   - 5020:80/tcp
+#   environment:
+#     VWWEBAPP_PORT: 80
+#     VWWEBAPP_JWT_SECRET_KEY: virtualwatershed
+#     VWWEBAPP_JWT_AUTH_HEADER_PREFIX: JWT
+#     #VWWEBAPP_JWT_EXPIRATION_DELTA:
+#     #SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:postgres@webappdb:5432/postgres'
+#     SQLALCHEMY_USER_DATABASE_URI: postgresql://postgres:postgres@userdb:5432/postgres
+#     VWWEBAPP_SESSION_TYPE: redis
+#     VWWEBAPP_SESSION_REDIS_HOST: sessiondb
+#     VWWEBAPP_SESSION_COOKIE_NAME: vwsession
+#     VW_SECRET_KEY: virtualwatershed
+#     VWWEBAPP_LOGIN_URL: http://vw-dev:5005/login
+#     VWWEBAPP_LOGOUT_URL: http://vw-dev:5005/logout
+#     VWWEBAPP_REGISTER_URL: http://vw-dev:5005/register
+#     MODEL_HOST: http://vw-dev:5000
+#   # volumes:
+#   # - /home/docker/convtools:/var/www/vwtools
+#   links:
+#   - postgres-userdb:userdb
+#   - postgres-webappdb:webappdb
+#   - :sessiondb
+#   command:
+#   - python
+#   - manage.py
+#   - runserver
+#   - -h
+#   - 0.0.0.0
+#   - -p
+#   - '80'
+
+
+
+def create_worker_container(container_name):
+    container_envs = docker.utils.parse_env_file('/var/www/taskmanager/container_env.txt')
+    links=[('postgres-modeldb', 'modeldb'),('postgres-userdb', 'userdb'),('redis-workerdb', 'workerdb')]
+    binds={"/vwstorage": "/vwstorage"}
+    volumes = ['/vwstorage']
+
+    volume_bindings = {
+        '/vwstorage': {
+            'bind': '/vwstorage',
+            'mode': 'rw',
+        },
+    }
+
+    host_config = client.create_host_config(
+        binds=volume_bindings,
+        links=links,
+        network_mode='my-net'
+        # port_bindings = port_bindings
+    )
+
+    container = client.create_container(
+        # image='virtualwatershed/vwadaptor',
+        image='josepainumkal/vwadaptor:jose_toolUI',
+        environment=container_envs,
+        stdin_open=True,
+        tty=True,
+        command='celery -A worker.modelworker worker -Ofair --loglevel=info --autoreload --logfile=/celery.log -n '+ container_name,
+        name=container_name,
+        volumes=volumes,
+        host_config=host_config
+        # networking_config = networking_config
+        # host_config=create_host_config(port_bindings={2424:2425})
+        # host_config=docker.utils.create_host_config(binds=binds)
+    ) 
+ 
+    response = client.start(container=container.get('Id'))
+    # print container.get('Id')
+
+
+@main.route('/worker')
+def createworker():
+    # return Response('Online: %s' % ', '.join(get_online_users()),
+    #                 mimetype='text/plain')
+    
+    create_worker_container('worker-4')
+    # resp = client.containers(filters={'name':'convtools'})
+
+    # resp = json.dumps(resp)
+    # # return Response(resp)
+
+    # if resp =='[]':
+    #     # the container is stopped/doesnot exist ( not present in 'docker ps')
+    #     create_convtools_container()
+    #     # sleep(3.5)
+    #     # return Response('NO')
+
+    # return redirect('http://vw-dev:5020/')
+    return Response('CREATED')
+
+
+
+
+def create_convtools_container():
+    container_name = 'convtools'
+    container_envs = docker.utils.parse_env_file('/var/www/taskmanager/env_vwtools.txt')
+    links=[('postgres-userdb', 'userdb'),('postgres-webappdb', 'webappdb'),('redis-sessiondb', 'sessiondb')]
+    
+    host_config = client.create_host_config(
+        links=links,
+        port_bindings = {80:5020}
+    )
+
+    container = client.create_container(
+        # image='virtualwatershed/vwadaptor',
+        image='josepainumkal/convtools:jose_toolUI',
+        environment=container_envs,
+        stdin_open=True,
+        tty=True,
+        command='python manage.py runserver -h 0.0.0.0 -p 80',
+        name=container_name,
+        host_config=host_config
+        # networking_config = networking_config
+        # host_config=create_host_config(port_bindings={2424:2425})
+        # host_config=docker.utils.create_host_config(binds=binds)
+    ) 
+    response = client.start(container=container.get('Id'))
+    print container.get('Id')
+
+def remove_container(container):
+    resp = client.remove_container(container=container, force='true',v='true')
+    print resp
+
 
 def set_api_token(func):
     @wraps(func)
@@ -70,6 +206,34 @@ def toolset_index():
 def vwppushmodels():
     # session['sampletest'] = 'hello';
     return render_template('vwppushmodels.html')
+
+@main.route('/convtools')
+def convtools():
+    # return Response('Online: %s' % ', '.join(get_online_users()),
+    #                 mimetype='text/plain')
+    resp = client.containers(filters={'name':'convtools'})
+
+    resp = json.dumps(resp)
+    # return Response(resp)
+
+    if resp =='[]':
+        # the container is stopped/doesnot exist ( not present in 'docker ps')
+        create_convtools_container()
+        # sleep(3.5)
+        # return Response('NO')
+
+    return redirect('http://vw-dev:5020/')
+
+
+
+@main.route('/seams')
+def seams():
+    return render_template('seams.html')
+
+
+
+
+
 
 @main.route('/access_token')
 @login_required
