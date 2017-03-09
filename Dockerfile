@@ -15,6 +15,7 @@ RUN apt-get install -y nodejs
 RUN npm install -g bower
 RUN apt-get install sshpass
 RUN apt-get install python-matplotlib
+RUN apt-get install vim
 
 # install docker client to run docker commands inside container
 #RUN apt-get install -y docker.io
