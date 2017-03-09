@@ -1,4 +1,5 @@
 # Deployment
+setuptools==34.0.1
 cffi==1.7.0
 appnope==0.1.0
 certifi==2016.2.28
