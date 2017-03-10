@@ -14,8 +14,6 @@ RUN curl -sL https://deb.nodesource.com/setup_4.x | sh -
 RUN apt-get install -y nodejs
 RUN npm install -g bower
 RUN apt-get install sshpass
-RUN apt-get install -y python-matplotlib 
-RUN apt-get install -y vim 
 
 # install docker client to run docker commands inside container
 #RUN apt-get install -y docker.io
