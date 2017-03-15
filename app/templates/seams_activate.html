@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% set active_page = "toolset.index" %}
+
+{% block scripts %}
+    {{ super() }}
+    <!-- THIS JS IS USED TO TAKE SCREENSHOT -->
+   <!--  <script type="text/javascript" src='/static/bower_components/html2canvas/build/html2canvas.min.js' type='text/javascript'></script> -->
+    <!-- THIS JS IS an AWESOME COLOR LIB -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.5.4/bootstrap-slider.js"></script> --> 
+    <script type="text/javascript" src="/static/js/seams.js"></script>
+ <!--    <script src="/static/s_tasks.js"></script> -->
+    <script type="text/javascript" src="http://www.eyecon.ro/bootstrap-slider/js/bootstrap-slider.js"></script>
+{% endblock %}
+
+
+{% block link %}
+{{ super() }}
+
+<link rel="stylesheet" href="www.eyecon.ro/bootstrap-slider/css/bootstrap.css">
+<link rel="stylesheet" href="http://www.eyecon.ro/bootstrap-slider/css/slider.css"> 
+<!--     <script>
+  $( function() {
+    $( "#slider" ).bootstrapSlider();
+
+  } );
+  </script> -->
+<style>
+p {
+    margin: 35px 0;
+}
+p#main-blurb {
+    padding: 5px;
+    font-size: 1.6em;
+    /*background-color:#555;*/
+    color: black;
+    text-align: justify;
+}
+.alert-info {
+    color: #31708F;
+    background-color: #D9EDF7;
+    border-color: #BCE8F1;
+}
+
+.alert-danger {
+    color: #31708F;
+    background-color: #edd3dd;
+    border-color: #BCE8F1;
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+
+<!--  <br><br> -->
+<!-- <p id="main-blurb">
+    <u>PRMS Model Run Using Conversion Tools </u>
+</p> 
+ -->
+
+<br><br>
+
+<div class="row">
+    <div class="col-xs-6">
+          <div class = "panel panel-primary">
+              <div class = "panel-heading">
+                    <h3 class = "panel-title">Activate</h3>
+              </div>
+              <div class = "panel-body"><br>
+                  <div class="col-xs-11" style="padding-left:75px;" >
+
+                    <form id="activate_seams" action="/seams_activate" method="post" enctype="multipart/form-data" >
+                        <div class="row">
+                                <div class="col-xs-6">
+                                    <label class="control-label">Budget Amount ($): </label>
+                                    <input class="form-control" type="number" name="a_amount" id="totalamount" placeholder="amount ($)" step="0.001" required><br><br>
+                                </div>
+<!--                                 <div class="col-xs-6" >
+                                    <label class="control-label">Budget Period (T<sub>b</sub> in mins): </label>
+                                    <input class="form-control input-sm" type="number"  name="a_duration" id="duration" placeholder="duration (in mins)" required><br><br>
+                                </div> -->
+                        </div>
+                        <div class="row">
+                                <div class="col-xs-6" >
+                                    <label class="control-label">Budget Period (T<sub>b</sub> in mins): </label>
+                                    <input class="form-control" type="number"  name="a_duration" id="duration" placeholder="duration (in mins)" required><br><br>
+                                </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-xs-6" >
+                                    <label class="control-label">Instance Cost ($/hr): </label>
+                                    <input class="form-control " type="number"  name="a_rate" id="rate" placeholder="rate ($/hour)" step="0.001" required><br><br>
+                                </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-xs-6" >
+                                    <label class="control-label">Avg. Execution Time (sec): </label>
+                                    <input class="form-control " type="number"  name="a_tavg" id="tavg" placeholder="time (seconds)" step="0.001" required><br><br>
+                                </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-xs-6" >
+                                    <label class="control-label">Job Arrival Rate (&lambda; during T<sub>b</sub>): </label>
+                                    <input class="form-control " type="number"  name="a_lamda" id="lamda" placeholder="" required>
+                                </div>
+                                <div class="col-xs-6" ><br><br>
+                                    <span id="lamdaError" class="error text-danger" style="display:none;">Error: &lambda; should be less than  &mu;</span>
+                                </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                                <div class="col-xs-3">   
+                                    <button type="button" class="btn btn-warning" id="activateId">Activate</button>
+                                </div>
+                                 <div class="col-xs-8">   
+                                    <div id="activate_box" style="display:none;"><span class="text-danger"><br>&nbsp;&nbsp;Activated successfully...</span><br><br>
+                                    </div>
+                                </div>
+                        </div> 
+                  </form>
+                  </div>
+              </div>
+          </div>
+    </div>
+    <div class="col-xs-6">
+          <div class = "panel panel-primary">
+                <div class = "panel-heading">
+                  <h3 class = "panel-title">Email Alert Settings</h3>
+                </div>
+                <div class = "panel-body" ><br>
+                      <div class="col-xs-11" style="padding-left:75px;" >
+                              <div class="row">
+                                      <div id="show_box" class="alert alert-info" role="alert" >
+                                          <label class="control-label">Send Email Alerts To : </label>
+                                          <table id="elist">
+                                                <tbody id='alertEmailList'></tbody>
+                                          </table> 
+                                      </div>
+                              </div>
+                              <div class="row" class="col-xs-5">
+                                    <form id="insert_Email" method="post" enctype="multipart/form-data">
+                                          <div class="input-group">
+                                                <span class="input-group-btn">
+                                                <button class="btn btn-success " type="button" id="btn_addemail">Subscribe</button>
+                                                </span>
+                                                <input type="text" class="form-control" id="addemail" name="addemail" placeholder="Add User">
+                                          </div>
+                                          </form>
+                                          <br>
+                                          <form id="remove_Email" method="post" enctype="multipart/form-data">
+                                          <div class="input-group">
+                                                <span class="input-group-btn">
+                                                <button class="btn btn-danger" type="button" id="btn_delemail">Unsubscribe</button>
+                                                </span>
+                                                <input type="text" class="form-control " id="delemail" name="delemail" placeholder="Remove user">
+                                          </div>
+                                    </form>
+                               </div>
+                              <div class="row"><br><br>
+                                  <div id="show_box" class="alert alert-info" role="alert" >
+                                        <label class="control-label">Alert Settings : </label><br>
+                                        <span> Time Interval (sec): </span><span id="e_interval"> </span><br>
+                                        <span> Current Feedback Score: </span><span id="e_fd_score"></span><br>
+                                        <span> Threshold Feedback Score: </span><span id="e_threshold"></span><br>
+                                  </div>
+                              </div>
+                              <div class="row" class="col-xs-5">
+                                  <form id="modify_time_interval" method="post" enctype="multipart/form-data">
+                                      <div class="input-group">
+                                            <span class="input-group-btn">
+                                            <button class="btn btn-success " type="button" id="btn_modifytime">Set Time Interval</button>
+                                            </span>
+                                            <input type="text" class="form-control" id="new_timeinterval" name="new_timeinterval" placeholder="Time Interval (sec)">
+                                      </div>
+                                  </form>
+                                  <br>
+                                  <form id="modify_th_value" method="post" enctype="multipart/form-data">
+                                      <div class="input-group">
+                                            <span class="input-group-btn">
+                                            <button class="btn btn-danger" type="button" id="btn_thval">Set Threshold Score</button>
+                                            </span>
+                                            <input type="text" class="form-control " id="newthval" name="newthval" placeholder="Threshold Feedback Score">
+                                      </div>
+                                  </form><br><br>
+                              </div>
+                      </div>
+
+                </div>  
+          </div>   
+    </div>
+
+</div>
+
+<!-- <div class = "panel panel-primary">
+   <div class = "panel-heading">
+      <h3 class = "panel-title">Activate</h3>
+   </div>
+   
+   <div class = "panel-body"><br>
+        <div class="row">
+            <div class="col-xs-5" style="padding-left:75px;">
+                  <form id="activate_seams" action="/seams_activate" method="post" enctype="multipart/form-data" >
+                  <div class="row">
+                      <div class="col-xs-6">
+                          <label class="control-label">Budget Amount ($): </label>
+                          <input class="form-control input-sm" type="number" name="a_amount" id="totalamount" placeholder="amount ($)" step="0.001" required><br><br>
+                      </div>
+                      <div class="col-xs-6" >
+                          <label class="control-label">Budget Period (T<sub>b</sub> in mins): </label>
+                          <input class="form-control input-sm" type="number"  name="a_duration" id="duration" placeholder="duration (in mins)" required><br><br>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-6" >
+                          <label class="control-label">Instance Cost ($/hr): </label>
+                          <input class="form-control input-sm" type="number"  name="a_rate" id="rate" placeholder="rate ($/hour)" step="0.001" required><br><br>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-6" >
+                          <label class="control-label">Avg. Execution Time (sec): </label>
+                          <input class="form-control input-sm" type="number"  name="a_tavg" id="tavg" placeholder="time (seconds)" step="0.001" required><br><br>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-6" >
+                          <label class="control-label">Job Arrival Rate (&lambda; during T<sub>b</sub>): </label>
+                          <input class="form-control input-sm" type="number"  name="a_lamda" id="lamda" placeholder="" required> <span id="lamdaError" class="error text-danger" style="display:none;"> Error: &lambda; should be less than  &mu;</span> <br><br>
+                      </div>
+                  </div>
+
+                  <br>
+                  <div class="row">
+                      <div class="col-xs-2">   
+                          <button type="button" class="btn btn-warning" id="activateId">Activate</button><br><br><br>
+                      </div>
+                       <div class="col-xs-6">   
+                          <div id="activate_box" style="display:none;"><span class="text-danger"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activated successfully...</span><br><br>
+                          </div>
+                      </div>
+                  </div> 
+                  </form>
+            </div>
+
+            <div class="col-xs-2" style="padding-left:75px;">
+            </div>
+
+            <div class="col-xs-4" style="padding-left:75px;">
+                
+                <div class="row">
+                        <div id="show_box" class="alert alert-info" role="alert" >
+                            <label class="control-label">Send Email Alerts To : </label>
+                            <table id="elist">
+                                  <tbody id='alertEmailList'></tbody>
+                            </table> 
+                        </div>
+                 </div>
+                <div class="row" class="col-xs-5">
+                      <form id="insert_Email" method="post" enctype="multipart/form-data">
+                  				  <div class="input-group">
+                         			    <span class="input-group-btn">
+                            			<button class="btn btn-success " type="button" id="btn_addemail">Subscribe</button>
+                          				</span>
+                          				<input type="text" class="form-control" id="addemail" name="addemail" placeholder="Add User">
+                      			</div>
+                      			</form>
+                            <br>
+                      			<form id="remove_Email" method="post" enctype="multipart/form-data">
+                  				  <div class="input-group">
+                         			    <span class="input-group-btn">
+                            			<button class="btn btn-danger" type="button" id="btn_delemail">Unsubscribe</button>
+                          				</span>
+                          				<input type="text" class="form-control " id="delemail" name="delemail" placeholder="Remove user">
+                      			</div>
+                    	</form>
+                 </div>
+                <div class="row"><br><br>
+                    <div id="show_box" class="alert alert-info" role="alert" >
+                          <label class="control-label">Alert Settings : </label><br>
+                          <span> Time Interval (sec): </span><span id="e_interval"> </span><br>
+                          <span> Current Feedback Score: </span><span id="e_fd_score"></span><br>
+                          <span> Threshold Feedback Score: </span><span id="e_threshold"></span><br>
+                    </div>
+                </div>
+                <div class="row" class="col-xs-5">
+                    <form id="modify_time_interval" method="post" enctype="multipart/form-data">
+                        <div class="input-group">
+                              <span class="input-group-btn">
+                              <button class="btn btn-success " type="button" id="btn_modifytime">Set Time Interval</button>
+                              </span>
+                              <input type="text" class="form-control" id="new_timeinterval" name="new_timeinterval" placeholder="Time Interval (sec)">
+                        </div>
+                    </form>
+                    <br>
+                    <form id="modify_th_value" method="post" enctype="multipart/form-data">
+                        <div class="input-group">
+                              <span class="input-group-btn">
+                              <button class="btn btn-danger" type="button" id="btn_thval">Set Threshold Score</button>
+                              </span>
+                              <input type="text" class="form-control " id="newthval" name="newthval" placeholder="Threshold Feedback Score">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+    </div>
+        </div> -->
+        
+
+
+
+
+   </div>
+</div>
+
+
+<br><br> 
+
+
+
+
+
+
+
+{% endblock %}

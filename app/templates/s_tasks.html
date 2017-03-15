@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% set active_page = "toolset.index" %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/s_tasks.js"></script>
+{% endblock %}
+
+{% block link %}
+{{ super() }}
+<style>
+p {
+    margin: 35px 0;
+}
+p#main-blurb {
+    padding: 5px;
+    font-size: 1.6em;
+    /*background-color:#555;*/
+    color: black;
+    text-align: justify;
+}
+
+.input-small {
+  height: 22px;
+  padding: 2px 5px;
+  font-size: 12px;
+  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+  border-radius: 3px;
+  width:200px;
+}
+
+.btn-small{
+  height: 22px;
+  padding: 2px 5px;
+  font-size: 12px;
+  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+  border-radius: 3px;
+  width:70px;
+}
+
+.small-rw{
+  line-height: 0.5px; 
+}
+ 
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<p id="main-blurb">
+    <u></u>
+    <input id="model_api_url" type="hidden" value="{{config['MODEL_HOST']}}" />
+     <input id="sample" type="hidden" value="{{session['sampletest']}}" />
+   <!--  <input type='' id='model_api_url'>{{config['MODEL_HOST']}}</p>
+    <p id='model_run_server_id'>{{model_run_server}}</p> -->
+</p> 
+
+<div class="row">
+  <div class="alert alert-warning-alt fade in" style="width:50%; margin:1.5%;">    
+      <strong>Budget Amount:</strong>&nbsp;&nbsp;<span id="budget_amount"></span><br>
+      <strong>Amount Remaining:</strong>&nbsp;&nbsp;<span id="amount_remaining"></span><br>
+      <strong>Models-Owned:</strong>&nbsp;&nbsp;<span id="models_owned"></span><br>
+      <strong>Models-Rented:</strong>&nbsp;&nbsp;<span id="models_rented"></span><br>
+      <strong>Total Models: </strong>&nbsp;&nbsp;<span id="total_models"></span><br>
+  </div>
+</div>
+
+<div class = "panel panel-primary">
+   <!-- <div class = "panel-heading">
+         <div class="row small-rw">
+              <div class="col-xs-7">
+                   <h3 class = "panel-title">Tasks Info</h3>
+              </div>
+              <div class="col-xs-7">
+                 <button id="gstoreSbtId" type="button" class="btn btn-warning btn-small">Change</button>
+             </div>
+          </div>
+   </div> -->
+   
+   <div class = "panel-heading">
+         <div class="row small-rw">
+              <div class="col-xs-7">
+                   <h3 class = "panel-title">Tasks Info</h3>
+              </div>
+
+              <form class="gstoreCred form-signin" action="" method="POST" role="form">
+              <div class="col-xs-2 gCred">
+                   <!-- <input name="gstore-uname" id="gstore-uname" type="email" class="form-control input-small"  type="text" value="{{session['g-uname']}}" placeholder="Gstore Username"  disabled/><br> -->
+              </div>
+              <div class="col-xs-2 gCred">
+                  <!--  <input name="gstore-pwd" id="gstore-pwd" type="password" class="form-control input-small"  type="text" value="{{session['g-pass']}}" placeholder="Gstore Password" disabled/> -->
+              </div> 
+              
+               <div class="col-xs-1 gCred">
+                    <button id="resetBtnId" type="button" class="btn btn-warning btn-small">Reset</button>
+               </div>
+              </form>
+
+
+          </div>
+          <div class="row .small-rw" >
+          <div class="col-xs-7">
+          </div>
+          <div class="col-xs-2 gCred">
+          <span id="error-gstoreCred"></span>
+          </div>
+
+          </div>
+
+   </div>
+
+   <div class = "panel-body" >
+   <div class="row .small-rw" >
+   <div class="col-xs-7"><span id="gstoreCredAlert" class="alert-warning"> </span>
+
+   </div>
+   </div><br>
+      
+      <div class="modelRunList">
+            <table class="table table-striped" id='model-run-table-id'>
+                <thead>
+                    <tr>
+                        <td><strong>Model Id</strong></td>
+                        <td><strong>Wait Time (sec)</strong></td>
+                        <td><strong>Run Time (sec)</strong></td>
+                        <td><strong>Worker Name</strong></td>
+                        <td><strong>Worker Type</strong></td> 
+                        <td><strong>Cost ($)</strong></td> 
+                        <td><strong>Task Id</strong></td> 
+                        <!-- <td className="download-link"><strong>Choose This Model Run</strong></td> -->
+                    </tr>
+                </thead>
+                <tbody id='model-run-items'>
+                </tbody>
+                <tbody id='seams-task-items'>
+                </tbody>
+            </table>
+      </div>
+      <div id='additional-info'></div> 
+   </div>
+</div>
+<div id='error-info'></div>
+
+<br><br> 
+
+<!-- 
+ task_str = str(taskId)+'|'+str(modelId)+'|'+str(round(wait_time,4))+'|'+str(round(runtime,4))+'|'+str(workername)
+
+   -->     
+
+
+
+
+
+
+{% if success == 'true'%} 
+
+<div class="alert alert-success fade in ">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <font size="3" color="black">The files are converted successfully. You can download the netcdf files here....</font> &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+    <div class="btn-group" role="group" aria-label="...">
+      <div class="row">
+          <div class="col-xs-3">
+            <form action="downloaddatafile" methods=['GET', 'POST']>
+                <button type="submit" class="btn btn-default">data.nc</button>
+            </form>
+          </div>
+          <div class="col-xs-3">
+            <form action="downloadparamfile" methods=['GET', 'POST']>
+                <button type="submit" class="btn btn-default">parameter.nc</button>
+            </form>
+          </div>
+      </div>
+    </div>
+
+    <!-- <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> <br><br> -->
+    <br><br><font size="3" color="black">Want to run PRMS Model ?</font><br><br>
+      <form action="invoke_model" methods=['GET','POST']>
+      <div class="row">
+            <div class="col-xs-3">
+              <input name="modelTitle" class="form-control input-sm" type="text" placeholder="Please enter a title for the model run" required>
+            </div>
+            <div class="col-xs-3">
+              <button type="submit" class="btn btn-default">RUN PRMS</button>
+            </div>
+      </div>
+      <div class="row">
+        {% if modelID %}
+         <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;PRMS model run initiated. The model run id for the job is {{ modelID }}
+        {% endif %}
+      </div>
+      </form>
+
+</div>
+{% endif %} 
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="list-unstyled">
+    {% for message in messages %}
+    <div class="alert alert-danger">
+        <strong>Sorry! An error has occurred.</strong> <li>{{ message }}</li>
+    </div>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+{% endblock %}

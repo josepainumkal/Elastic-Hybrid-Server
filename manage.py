@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import os
+import subprocess
 
 from flask import request, redirect
 
@@ -38,6 +39,9 @@ app.login_manager.unauthorized = unauthorized
 
 @app.before_first_request
 def create_db():
+    cmd1 = ['python', '/var/www/taskmanager/app/main/example.py']
+    subprocess.Popen(cmd1)
+    print"I am here"
     db.create_all()
 
 manager = Manager(app)

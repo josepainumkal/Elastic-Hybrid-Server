@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% set active_page = "toolset.index" %}
+
+{% block scripts %}
+    {{ super() }}
+    <!-- THIS JS IS USED TO TAKE SCREENSHOT -->
+   <!--  <script type="text/javascript" src='/static/bower_components/html2canvas/build/html2canvas.min.js' type='text/javascript'></script> -->
+    <!-- THIS JS IS an AWESOME COLOR LIB -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.5.4/bootstrap-slider.js"></script> --> 
+    <script type="text/javascript" src="/static/js/seams.js"></script>
+    <script src="/static/s_tasks.js"></script>
+  
+ <!--    <script type="text/javascript" src="http://www.eyecon.ro/bootstrap-slider/js/bootstrap-slider.js"></script> -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="/static/js/survey_results.js"></script>
+    
+{% endblock %}
+
+{% block link %}
+{{ super() }}
+<style>
+p {
+    margin: 35px 0;
+}
+p#main-blurb {
+    padding: 5px;
+    font-size: 1.6em;
+    /*background-color:#555;*/
+    color: black;
+    text-align: justify;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+ <br>
+<p id="main-blurb">
+    <span><u> Survey Results </u></span>
+</p> 
+
+
+<br>
+<form id="graph_data" action="/send_mail" method="post" enctype="multipart/form-data" >
+  <div class="row">
+      <div class="col-xs-5">
+          <div id="chart_div1"></div>
+         <!--  <input type="hidden" id="bar1" name="bar1" /> -->
+      </div>
+      <div class="col-xs-5">
+          <div id="chart_div2"></div>
+          <!-- <input type="hidden" id="bar2" name="bar2" /> -->
+      </div>
+  </div>
+  <br><br><br><br>
+  <div class="row">
+      <div class="col-xs-5">
+          <div id="chart_div3"></div>
+          <!-- <input type="hidden" id="bar3" name="bar3" /> -->
+      </div>
+      <div class="col-xs-5">
+          <div id="chart_div4"></div>
+         <!--  <input type="hidden" id="bar4" name="bar4" /> -->
+      </div>
+  </div>
+</form>
+           
+
+
+
+
+
+
+
+
+<br><br> 
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="list-unstyled">
+    {% for message in messages %}
+    <div class="alert alert-danger">
+        <strong>Sorry! An error has occurred.</strong> <li>{{ message }}</li>
+    </div>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+{% endblock %}

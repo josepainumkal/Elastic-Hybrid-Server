@@ -1,0 +1,201 @@
+
+{% extends "base.html" %}
+{% set active_page = "toolset.index" %}
+
+{% block scripts %}
+    {{ super() }}
+    <!-- THIS JS IS USED TO TAKE SCREENSHOT -->
+   <!--  <script type="text/javascript" src='/static/bower_components/html2canvas/build/html2canvas.min.js' type='text/javascript'></script> -->
+    <!-- THIS JS IS an AWESOME COLOR LIB -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.5.4/bootstrap-slider.js"></script> --> 
+    <script type="text/javascript" src="/static/js/seams.js"></script>
+    <script type="text/javascript" src="http://www.eyecon.ro/bootstrap-slider/js/bootstrap-slider.js"></script>
+{% endblock %}
+
+
+{% block link %}
+{{ super() }}
+
+<link rel="stylesheet" href="www.eyecon.ro/bootstrap-slider/css/bootstrap.css">
+<link rel="stylesheet" href="http://www.eyecon.ro/bootstrap-slider/css/slider.css"> 
+<!--     <script>
+  $( function() {
+    $( "#slider" ).bootstrapSlider();
+
+  } );
+  </script> -->
+<style>
+p {
+    margin: 35px 0;
+}
+p#main-blurb {
+    padding: 5px;
+    font-size: 1.6em;
+    /*background-color:#555;*/
+    color: black;
+    text-align: justify;
+}
+.alert-success {
+    color: #31708F;
+    background-color: #edd3dd;
+    border-color: #BCE8F1;
+    padding: 2px;
+}
+
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+
+<!--  <br><br> -->
+<!-- <p id="main-blurb">
+    <u>PRMS Model Run Using Conversion Tools </u>
+</p> 
+ -->
+
+<br>
+<div class = "panel panel-primary">
+   <div class = "panel-heading">
+      <h3 class = "panel-title">Feedback Form</h3>
+   </div>
+   
+   <div class = "panel-body"><br>
+  <p>Please fill the survey, the project manager improve the servers based on your feedbacks</p>            
+  <table class="table table-condensed">
+    <thead>
+      <tr class="success">
+        <th>Question</th>
+        <th>Choices</th>
+      </tr>
+    </thead>
+    <tbody>
+    <form id="feedback_form"; style= "text-align:center">
+      <tr class="danger">
+        <td>Are you satisfied with the website service?</td>
+        <td>
+          
+            <label class="radio-inline">
+              <input type="radio" name="q1" value="1">Yes
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q1" value="2">Just fine
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q1" value="3">No
+            </label>
+         
+        </td>
+      </tr>
+      <tr class="success">
+        <td>Are you satisfied with the waiting (queuing) time?</td>
+        <td>
+         
+            <label class="radio-inline">
+              <input type="radio" name="q2" value="1">Yes
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q2" value="2">Just fine
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q2" value="3">No
+            </label>
+          
+        </td>
+      </tr>
+      <tr class="danger">
+        <td>Does the website respond your request fast enough?</td>
+        <td>
+         
+            <label class="radio-inline">
+              <input type="radio" name="q3" value="1">Yes
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q3" value="2">Just fine
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q3" value="3">No
+            </label>
+          
+        </td>
+      </tr>
+      <tr class="success">
+        <td>Do you want to pay more to have a faster service?</td>
+        <td>
+          
+            <label class="radio-inline">
+              <input type="radio" name="q4" value="1">Yes
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q4" value="2">May be
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="q4" value="3">No
+            </label>
+          
+        </td>
+      </tr>
+    </form>
+    </tbody>
+  </table>
+  <div class="col-xs-6">   
+   <div class="row">
+        <div class="col-xs-2">   
+        <button type="submit" class="btn btn-warning" id="feedbackSubmitId">Submit</button><br><br><br>
+        </div>
+        <div class="col-xs-7">   
+                 <div id="survey_submit_notification_box" style="display:none;"><br>
+                    <span>Thank you. Your feedback has been submitted.</span><br><br>
+                </div> 
+        </div>
+   </div>
+
+     
+  </div>
+</div>
+
+
+
+
+
+
+
+
+      <!-- </form> -->
+
+   </div>
+</div>
+
+
+<br><br> 
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
