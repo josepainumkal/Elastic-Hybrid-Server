@@ -12,3 +12,5 @@ Jose T. Painumkal, Rui Wu, Sergiu M. Dascalu, and Frederick C. Harris Jr. "Self-
 
 
 
+![Alt text](app/static/sesh.gif?raw=true "Title")
+
