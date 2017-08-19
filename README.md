@@ -7,10 +7,7 @@ In this work, an innovative server-usage optimization strategy was proposed to e
 ## Publication:
 Jose T. Painumkal, Rui Wu, Sergiu M. Dascalu, and Frederick C. Harris Jr. "Self-managed elastic scale hybrid server using budget input and user feedback". *12th Workshop on Feedback Computing In Conjunction with the 14th IEEE International Conference on Autonomic Computing (ICAC 2017)*, Columbus, Ohio, USA July 17, 2017 
 
+For a demo video, click [here](https://youtu.be/Howbq0Bisy4)
 
 
-[linkname](https://youtu.be/Howbq0Bisy4)
-
-
-![Alt text](app/static/sesh.gif?raw=true "Title")
 
